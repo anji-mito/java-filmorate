@@ -11,7 +11,7 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Set;
 
-public class filmControllerTest {
+public class FilmControllerTest {
     private static final Validator validator;
 
     static {

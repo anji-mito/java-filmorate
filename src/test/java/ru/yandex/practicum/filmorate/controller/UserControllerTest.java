@@ -10,7 +10,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.Set;
 
-public class userControllerTest {
+public class UserControllerTest {
     private static final Validator validator;
 
     static {
