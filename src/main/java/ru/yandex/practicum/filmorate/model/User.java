@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.NoSpaces;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+
 @Slf4j
 @Data
 public class User {
