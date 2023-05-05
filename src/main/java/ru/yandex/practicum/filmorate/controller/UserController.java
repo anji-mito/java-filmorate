@@ -20,7 +20,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
-        if (user.getName() == null) {
+        if (user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         user.setId(++id);
@@ -31,15 +31,24 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<User> update(@Valid @RequestBody User user) {
-        User userToUpdate = users.stream().filter(user1 -> user1.getId() == user.getId()).findFirst().get();
-        users.remove(userToUpdate);
-        users.add(user);
-        log.info("Пользователь успешно обновлен.");
+        if (user.getName().isEmpty()) {
+            user.setName(user.getLogin());
+        }
+        var userToUpdate = users.stream()
+                                 .filter(user1 -> user1.getId() == user.getId())
+                                 .findFirst();
+        if (userToUpdate.isPresent()) {
+            users.remove(userToUpdate.get());
+            users.add(user);
+            log.info("Пользователь успешно обновлен.");
+        } else {
+            log.info("Пользователь не был найден: " + user.getLogin());
+        }
         return ResponseEntity.ok(user);
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAll() {
-        return (ResponseEntity.ok(users));
+        return ResponseEntity.ok(users);
     }
 }

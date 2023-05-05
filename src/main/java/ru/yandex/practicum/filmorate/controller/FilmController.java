@@ -30,15 +30,21 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> update(@Valid @RequestBody Film film) {
-        Film filmToUpdate = films.stream().filter(film1 -> film1.getId() == film.getId()).findFirst().get();
-        films.remove(filmToUpdate);
-        films.add(film);
-        log.info("Фильм успешно обновлен.");
+        var filmToUpdate = films.stream()
+                .filter(user1 -> user1.getId() == film.getId())
+                .findFirst();
+        if (filmToUpdate.isPresent()) {
+            films.remove(filmToUpdate.get());
+            films.add(film);
+            log.info("Фильм успешно обновлен.");
+        } else {
+            log.info("Фильм не был найден: " + film.getName());
+        }
         return ResponseEntity.ok(film);
     }
 
     @GetMapping
     public ResponseEntity<List<Film>> getAll() {
-        return (ResponseEntity.ok(films));
+        return ResponseEntity.ok(films);
     }
 }

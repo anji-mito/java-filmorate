@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import javax.validation.ConstraintViolation;
@@ -24,7 +24,7 @@ public class FilmControllerTest {
         final Film film = new Film();
         film.setReleaseDate(LocalDate.MIN);
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
-        Assert.assertTrue(validates.size() > 0);
+        assertTrue(validates.size() > 0);
         validates.stream().map(ConstraintViolation::getMessage).forEach(System.out::println);
     }
 }

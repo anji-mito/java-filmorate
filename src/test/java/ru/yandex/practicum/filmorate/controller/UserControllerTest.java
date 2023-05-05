@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controller;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.ConstraintViolation;
@@ -21,9 +21,9 @@ public class UserControllerTest {
     @Test
     public void emptyFieldsValidationTest() {
         final User user = new User();
-        user.setLogin("Login with space");
+        user.setLogin("Login with spaces");
         Set<ConstraintViolation<User>> validates = validator.validate(user);
-        Assert.assertTrue(validates.size() > 0);
+        assertTrue(validates.size() > 0);
         validates.stream().map(ConstraintViolation::getMessage).forEach(System.out::println);
     }
 }
