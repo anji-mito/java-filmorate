@@ -37,10 +37,12 @@ public class FilmController {
             films.remove(filmToUpdate.get());
             films.add(film);
             log.info("Фильм успешно обновлен.");
+            return ResponseEntity.ok(film);
         } else {
             log.info("Фильм не был найден: " + film.getName());
+            //как выкинуть ошибку? или просто кидать исключение?
+            return (ResponseEntity<Film>) ResponseEntity.badRequest();
         }
-        return ResponseEntity.ok(film);
     }
 
     @GetMapping
