@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
