@@ -30,19 +30,14 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> update(@Valid @RequestBody Film film) {
-        var filmToUpdate = films.stream()
-                .filter(user1 -> user1.getId() == film.getId())
-                .findFirst();
-        if (filmToUpdate.isPresent()) {
-            films.remove(filmToUpdate.get());
-            films.add(film);
-            log.info("Фильм успешно обновлен.");
-            return ResponseEntity.ok(film);
-        } else {
-            log.info("Фильм не был найден: " + film.getName());
-            //как выкинуть ошибку? или просто кидать исключение?
-            return (ResponseEntity<Film>) ResponseEntity.badRequest();
-        }
+        Film foundFilm = films.stream()
+                .filter(film1 -> film1.getId() == film.getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Not found film"));
+        films.remove(foundFilm);
+        films.add(film);
+        log.info("Фильм успешно обновлен.");
+        return ResponseEntity.ok(film);
     }
 
     @GetMapping

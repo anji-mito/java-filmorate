@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 
 import javax.validation.Valid;
@@ -20,9 +21,7 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
+        checkIfNameIsNotNull(user);
         user.setId(++id);
         users.add(user);
         log.info("Пользователь успешно добавлен. Текущее количество пользователей: " + users.size());
@@ -31,26 +30,24 @@ public class UserController {
 
     @PutMapping
     public ResponseEntity<User> update(@Valid @RequestBody User user) {
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
-        var userToUpdate = users.stream()
-                                 .filter(user1 -> user1.getId() == user.getId())
-                                 .findFirst();
-        if (userToUpdate.isPresent()) {
-            users.remove(userToUpdate.get());
-            users.add(user);
-            log.info("Пользователь успешно обновлен.");
-            return ResponseEntity.ok(user);
-        } else {
-            log.info("Пользователь не был найден: " + user.getLogin());
-            return (ResponseEntity<User>) ResponseEntity.badRequest();
-        }
-
+        checkIfNameIsNotNull(user);
+        User foundUser = users.stream()
+                .filter(user1 -> user1.getId() == user.getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Not found film"));
+        users.remove(foundUser);
+        users.add(user);
+        log.info("Фильм успешно обновлен.");
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAll() {
         return ResponseEntity.ok(users);
+    }
+    private void checkIfNameIsNotNull(User user) {
+        if (user.getName() == null) {
+            user.setName(user.getLogin());
+        }
     }
 }
