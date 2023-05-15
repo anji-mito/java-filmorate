@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.NoSpaces;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Slf4j
 @Data
@@ -20,4 +22,5 @@ public class User {
     String name;
     @Past(message = "Birthday can not be in the future")
     LocalDate birthday;
+    public Set<Long> friends = new HashSet<>();
 }
