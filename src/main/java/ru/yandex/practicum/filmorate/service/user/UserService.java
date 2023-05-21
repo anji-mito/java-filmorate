@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class UserService {
     public List<User> getFriends(Long userId) {
         var friends = userStorage.getFriends(userId);
         List<User> result = new ArrayList<>();
-        for (long friendId: friends) {
+        for (long friendId : friends) {
             result.add(getUser(friendId));
         }
         return result;
@@ -54,7 +55,7 @@ public class UserService {
         List<User> commonFriends = new ArrayList<>();
         var friends = userStorage.getFriends(friendId);
         for (Long id : userStorage.getFriends(userId)) {
-            if(friends.contains(id)){
+            if (friends.contains(id)) {
                 commonFriends.add(getUser(id));
             }
         }
