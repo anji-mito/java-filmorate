@@ -18,7 +18,6 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
