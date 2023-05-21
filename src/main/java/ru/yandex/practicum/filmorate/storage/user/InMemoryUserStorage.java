@@ -4,12 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -52,13 +51,27 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public void addFriend(long userId, long friendId) {
-        User user = getUserById(userId);
-        User friend = getUserById(friendId);
-        user.friends.add(friendId);
-        friend.friends.add(userId);
+        User user = getUser(userId);
+        User friend = getUser(friendId);
+        user.friends.add(friend.getId());
+        friend.friends.add(user.getId());
     }
 
-    private User getUserById(long userId) {
+    @Override
+    public void removeFriend(long userId, long friendId) {
+        User user = getUser(userId);
+        User friend = getUser(friendId);
+        user.friends.remove(friendId);
+        friend.friends.remove(userId);
+    }
+
+    @Override
+    public Set<Long> getFriends(long userId) {
+        return getUser(userId).getFriends();
+    }
+
+    @Override
+    public User getUser(Long userId) {
         return users.stream()
                 .filter(user1 -> user1.getId() == userId)
                 .findFirst()

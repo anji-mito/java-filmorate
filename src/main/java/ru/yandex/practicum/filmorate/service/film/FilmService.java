@@ -7,15 +7,15 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
     @Autowired
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
-        this.userStorage = userStorage;
     }
     public ResponseEntity<Film> create(Film film) {
         return filmStorage.create(film);
@@ -27,5 +27,20 @@ public class FilmService {
 
     public ResponseEntity<List<Film>> getAllFilms() {
         return ResponseEntity.ok(filmStorage.getAll().getBody());
+    }
+
+    public void addLike(Long filmId, Long userId) {
+        filmStorage.addLike(filmId, userId);
+    }
+
+    public void removeLike(Long filmId, Long userId) {
+        filmStorage.removeLike(filmId, userId);
+    }
+
+    public List<Film> getPopular(int count) {
+        return filmStorage.getPopular(count);
+    }
+    public Film getFilm(Long id) {
+        return filmStorage.getFilm(id);
     }
 }

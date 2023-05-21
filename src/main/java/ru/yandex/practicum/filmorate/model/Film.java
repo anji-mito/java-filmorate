@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.ReleaseDate;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
+import java.util.Set;
+import java.util.TreeSet;
 
 @Slf4j
 @Data
@@ -23,4 +25,5 @@ public class Film {
     @NotNull(message = "Duration can not be null")
     @Min(value = 0, message = "Duration can not be negative")
     Integer duration;
+    Set<Long> likes = new TreeSet<>();
 }

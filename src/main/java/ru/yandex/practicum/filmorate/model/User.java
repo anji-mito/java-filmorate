@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.NoSpaces;
 import javax.validation.constraints.*;
@@ -22,5 +23,6 @@ public class User {
     String name;
     @Past(message = "Birthday can not be in the future")
     LocalDate birthday;
+
     public Set<Long> friends = new HashSet<>();
 }

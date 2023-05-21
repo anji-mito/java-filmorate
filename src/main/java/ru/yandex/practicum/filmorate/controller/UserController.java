@@ -33,6 +33,27 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable long id) {
+        User user = userService.getUser(id);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable long id) {
+        return userService.getFriends(id);
+    }
+
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
+        userService.removeFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getCommonFriends(@PathVariable long id, @PathVariable long otherId) {
+        return userService.getCommonFriends(id, otherId);
+    }
+
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable long id, @PathVariable long friendId) {
         userService.addFriend(id, friendId);

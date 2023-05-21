@@ -1,17 +1,28 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
 @Slf4j
 @Component
-public class InMemoryFilmStorage implements FilmStorage {
+    public class InMemoryFilmStorage implements FilmStorage {
     private final List<Film> films = new ArrayList<>();
     private long id;
+
+    @Override
+    public Film getFilm(Long id) {
+        return films.stream()
+                .filter(film -> film.getId() == id)
+                .findFirst()
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found film"));
+    }
+
     @Override
     public ResponseEntity<Film> create(Film film) {
         film.setId(++id);
@@ -40,5 +51,35 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public ResponseEntity<List<Film>> getAll() {
         return ResponseEntity.ok(films);
+    }
+
+    @Override
+    public void addLike(Long filmId, Long userId) {
+        Film film = getFilm(filmId);
+        var likes = film.getLikes();
+        likes.add(userId);
+        film.setLikes(likes);
+    }
+
+    @Override
+    public void removeLike(Long filmId, Long userId) {
+        Film film = getFilm(filmId);
+        var likes = film.getLikes();
+        if (likes.contains(userId)) {
+            likes.remove(userId);
+            film.setLikes(likes);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
+    }
+
+    @Override
+    public List<Film> getPopular(int count) {
+         var sorted = new ArrayList<>(List.copyOf(films));
+         sorted.sort((o1, o2) -> o2.getLikes().size() - (o1.getLikes().size()));
+         if (count > sorted.size()) {
+             count = sorted.size();
+         }
+         return sorted.subList(0, count);
     }
 }
