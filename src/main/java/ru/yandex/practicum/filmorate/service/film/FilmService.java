@@ -7,12 +7,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
+
     @Autowired
     public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
         this.filmStorage = filmStorage;
@@ -40,6 +39,7 @@ public class FilmService {
     public List<Film> getPopular(int count) {
         return filmStorage.getPopular(count);
     }
+
     public Film getFilm(Long id) {
         return filmStorage.getFilm(id);
     }

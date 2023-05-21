@@ -17,6 +17,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
