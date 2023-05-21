@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -29,9 +30,7 @@ public class InMemoryUserStorage implements UserStorage {
     @Override
     public ResponseEntity<User> update(User user) {
         checkIfNameIsNotNull(user);
-        User foundUser = users.stream()
-                .filter(user1 -> user1.getId() == user.getId())
-                .findFirst()
+        User foundUser = users.stream().filter(user1 -> user1.getId() == user.getId()).findFirst()
                 .orElseThrow(() -> new IllegalStateException("Not found user"));
         users.remove(foundUser);
         users.add(user);
@@ -72,9 +71,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long userId) {
-        return users.stream()
-                .filter(user1 -> user1.getId() == userId)
-                .findFirst()
+        return users.stream().filter(user1 -> user1.getId() == userId).findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found user"));
     }
 

@@ -11,15 +11,13 @@ import java.util.*;
 
 @Slf4j
 @Component
-    public class InMemoryFilmStorage implements FilmStorage {
+public class InMemoryFilmStorage implements FilmStorage {
     private final List<Film> films = new ArrayList<>();
     private long id;
 
     @Override
     public Film getFilm(Long id) {
-        return films.stream()
-                .filter(film -> film.getId() == id)
-                .findFirst()
+        return films.stream().filter(film -> film.getId() == id).findFirst()
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found film"));
     }
 
@@ -33,9 +31,7 @@ import java.util.*;
 
     @Override
     public ResponseEntity<Film> update(Film film) {
-        Film foundFilm = films.stream()
-                .filter(film1 -> film1.getId() == film.getId())
-                .findFirst()
+        Film foundFilm = films.stream().filter(film1 -> film1.getId() == film.getId()).findFirst()
                 .orElseThrow(() -> new IllegalStateException("Not found film"));
         films.remove(foundFilm);
         films.add(film);
@@ -75,11 +71,11 @@ import java.util.*;
 
     @Override
     public List<Film> getPopular(int count) {
-         var sorted = new ArrayList<>(List.copyOf(films));
-         sorted.sort((o1, o2) -> o2.getLikes().size() - (o1.getLikes().size()));
-         if (count > sorted.size()) {
-             count = sorted.size();
-         }
-         return sorted.subList(0, count);
+        var sorted = new ArrayList<>(List.copyOf(films));
+        sorted.sort((o1, o2) -> o2.getLikes().size() - (o1.getLikes().size()));
+        if (count > sorted.size()) {
+            count = sorted.size();
+        }
+        return sorted.subList(0, count);
     }
 }
