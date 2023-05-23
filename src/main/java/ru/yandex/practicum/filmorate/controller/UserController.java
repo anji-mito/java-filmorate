@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 
@@ -21,33 +22,49 @@ public class UserController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> create(@Valid @RequestBody User user) {
-        return userService.create(user);
+        return ResponseEntity.ok(userService.create(user));
     }
 
     @PutMapping
     public ResponseEntity<User> update(@Valid @RequestBody User user) {
-        return userService.update(user);
+        try {
+            return ResponseEntity.ok(userService.update(user));
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
     }
 
     @GetMapping
     public ResponseEntity<List<User>> getAll() {
-        return userService.getAllUsers();
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable long id) {
-        User user = userService.getUser(id);
-        return ResponseEntity.ok(user);
+        try {
+            User user = userService.getUser(id);
+            return ResponseEntity.ok(user);
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
     }
 
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable long id) {
-        return userService.getFriends(id);
+        try {
+            return userService.getFriends(id);
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
     public void removeFriend(@PathVariable long id, @PathVariable long friendId) {
-        userService.removeFriend(id, friendId);
+        try {
+            userService.removeFriend(id, friendId);
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
@@ -57,6 +74,10 @@ public class UserController {
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable long id, @PathVariable long friendId) {
-        userService.addFriend(id, friendId);
+        try {
+            userService.addFriend(id, friendId);
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found such a user");
+        }
     }
 }

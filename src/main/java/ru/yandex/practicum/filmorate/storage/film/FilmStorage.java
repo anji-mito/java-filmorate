@@ -1,24 +1,20 @@
 package ru.yandex.practicum.filmorate.storage.film;
 
-import org.springframework.http.ResponseEntity;
 import ru.yandex.practicum.filmorate.model.Film;
+
 import java.util.List;
+import java.util.Optional;
 
 public interface FilmStorage {
 
-    Film getFilm(Long id);
+    Optional<Film> findFilm(Long id);
 
-    ResponseEntity<Film> create(Film film);
+    Film create(Film film);
 
-    ResponseEntity<Film> update(Film film);
+    Film update(Film film);
 
     void remove(Film film);
 
-    ResponseEntity<List<Film>> getAll();
+    List<Film> findAll();
 
-    void addLike(Long filmId, Long userId);
-
-    void removeLike(Long filmId, Long userId);
-
-    List<Film> getPopular(int count);
 }
