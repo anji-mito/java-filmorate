@@ -26,4 +26,6 @@ public class Film {
     @Min(value = 0, message = "Duration can not be negative")
     Integer duration;
     Set<Long> likes = new TreeSet<>();
+    Set<Long> genres = new TreeSet<>();
+    int rating;
 }
