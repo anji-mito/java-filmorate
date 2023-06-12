@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.storage.user.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,14 +19,20 @@ public class UserService {
     }
 
     public User create(User user) {
+        checkIfNameIsNotEmpty(user);
         return userStorage.create(user);
     }
 
-    public User update(User user) {
+    public User update(User user) throws IllegalStateException {
+        long userId = user.getId();
+        checkIfNameIsNotEmpty(user);
+        if (userStorage.findUser(userId).isEmpty()) {
+            throw new IllegalStateException("Not found such a user");
+        }
         return userStorage.update(user);
     }
 
-    public List<User> getAllUsers() {
+    public List<Optional<User>> getAllUsers() {
         return userStorage.findAllUsers();
     }
 
@@ -38,26 +45,24 @@ public class UserService {
     }
 
     public List<User> getFriends(Long userId) {
-        var friends = getUser(userId).getFriends();
+        List<Long> friends = userStorage.getFriends(userId);
         List<User> result = new ArrayList<>();
-        for (long friendId : friends) {
+        for (Long friendId : friends) {
             result.add(getUser(friendId));
         }
         return result;
     }
 
     public void addFriend(long id, long friendId) {
-        User user = getUser(id);
-        User friend = getUser(friendId);
-        user.friends.add(friend.getId());
-        friend.friends.add(user.getId());
+        if (getUser(id) != null && getUser(friendId) != null) {
+            userStorage.addFriend(id, friendId);
+        }
     }
 
     public void removeFriend(long userId, long friendId) {
-        User user = getUser(userId);
-        User friend = getUser(friendId);
-        user.friends.remove(friendId);
-        friend.friends.remove(userId);
+        if (userStorage.findUser(userId).isPresent() && userStorage.findUser(friendId).isPresent()) {
+            userStorage.removeFriend(userId, friendId);
+        }
     }
 
     public List<User> getCommonFriends(long userId, long friendId) {
@@ -69,5 +74,11 @@ public class UserService {
             }
         }
         return commonFriends;
+    }
+
+    private void checkIfNameIsNotEmpty(User user) {
+        if (user.getName() == null || user.getName().equals("")) {
+            user.setName(user.getLogin());
+        }
     }
 }

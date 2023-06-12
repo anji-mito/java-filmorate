@@ -13,7 +13,13 @@ public interface UserStorage {
 
     void remove(User user);
 
-    List<User> findAllUsers();
+    List<Optional<User>> findAllUsers();
 
     Optional<User> findUser(Long userId);
+
+    List<Long> getFriends(Long id);
+
+    void addFriend(long id, long friendId);
+
+    void removeFriend(long id, long friendId);
 }

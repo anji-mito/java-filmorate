@@ -9,12 +9,16 @@ public interface FilmStorage {
 
     Optional<Film> findFilm(Long id);
 
-    Film create(Film film);
+    long create(Film film);
 
-    Film update(Film film);
+    Optional<Film> update(Film film);
 
     void remove(Film film);
 
-    List<Film> findAll();
+    List<Optional<Film>> findAll();
+
+    void addLike(long filmId, long userId);
+
+    void removeLike(long filmId, long userId);
 
 }

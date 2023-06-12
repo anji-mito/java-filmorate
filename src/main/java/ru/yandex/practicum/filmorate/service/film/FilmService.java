@@ -3,8 +3,11 @@ package ru.yandex.practicum.filmorate.service.film;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresDbStorage;
+import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,61 +16,47 @@ import java.util.Optional;
 @Service
 public class FilmService {
     private final FilmStorage filmStorage;
-
     private final UserService userService;
+    //стоит ли создать и использовать вместо storage Service для вспомогательой таблицы films-genres
+    private final FilmsGenresStorage filmsGenresDbStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserService userService) {
+    public FilmService(FilmStorage filmStorage, UserService userService, FilmsGenresDbStorage filmsGenresDbStorage) {
         this.filmStorage = filmStorage;
         this.userService = userService;
+        this.filmsGenresDbStorage = filmsGenresDbStorage;
     }
 
     public Film create(Film film) {
-        return filmStorage.create(film);
+        return getFilm(filmStorage.create(film));
     }
 
-    public Film update(Film film) throws IllegalStateException {
+    public Optional<Film> update(Film film) throws IllegalStateException {
+        if (filmStorage.findFilm(film.getId()).isEmpty()) {
+            throw new IllegalStateException("Not found such a user");
+        }
         return filmStorage.update(film);
     }
 
-    public List<Film> getAllFilms() {
+    public List<Optional<Film>> getAllFilms() {
         return filmStorage.findAll();
     }
 
     public void addLike(Long filmId, Long userId) throws IllegalStateException {
-        if (userService.getUser(userId) == null) {
-            throw new IllegalStateException("Not found such a user");
-        }
-        Optional<Film> foundFilm = filmStorage.findFilm(filmId);
-        if (foundFilm.isPresent()) {
-            Film film = foundFilm.get();
-            var likes = film.getLikes();
-            likes.add(userId);
-            film.setLikes(likes);
-        } else {
-            throw new IllegalStateException("Not found such a film");
-        }
+        getFilm(filmId);
+        userService.getUser(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void removeLike(Long filmId, Long userId) throws IllegalStateException {
-        Optional<Film> foundFilm = filmStorage.findFilm(filmId);
-        if (foundFilm.isPresent()) {
-            Film film = foundFilm.get();
-            var likes = film.getLikes();
-            if (likes.contains(userId)) {
-                likes.remove(userId);
-                film.setLikes(likes);
-            } else {
-                throw new IllegalStateException("Not found such a user");
-            }
-        } else {
-            throw new IllegalStateException("Not found such a film");
-        }
+        getFilm(filmId);
+        userService.getUser(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
-    public List<Film> getPopular(int count) {
+    public List<Optional<Film>> getPopular(int count) {
         var sorted = new ArrayList<>(List.copyOf(filmStorage.findAll()));
-        sorted.sort((o1, o2) -> o2.getLikes().size() - (o1.getLikes().size()));
+        sorted.sort((o1, o2) -> o2.get().getRate() - (o1.get().getRate()));
         if (count > sorted.size()) {
             count = sorted.size();
         }
@@ -77,9 +66,16 @@ public class FilmService {
     public Film getFilm(Long id) throws IllegalStateException {
         Optional<Film> foundFilm = filmStorage.findFilm(id);
         if (foundFilm.isPresent()) {
-            return foundFilm.get();
+            var r = filmsGenresDbStorage.getGenresOfFilm(id);
+            List<Genre> genres = new ArrayList<>();
+            for (Optional<Genre> genre: r) {
+                genre.ifPresent(genres::add);
+            }
+            Film film = foundFilm.get();
+            film.setGenres(genres);
+            return film;
         } else {
-            throw new IllegalStateException("Film not found");
+            throw new IllegalStateException("Film is not found");
         }
     }
 }

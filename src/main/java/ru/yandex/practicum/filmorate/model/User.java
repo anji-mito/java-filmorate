@@ -1,15 +1,16 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.NoSpaces;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Data
+@Builder
 public class User {
     long id;
     @NotNull(message = "Email can not be null")
@@ -22,6 +23,14 @@ public class User {
     String name;
     @Past(message = "Birthday can not be in the future")
     LocalDate birthday;
-
     public Set<Long> friends = new HashSet<>();
+
+    public Map<String, Object> toMap() {
+        Map<String, Object> values = new HashMap<>();
+        values.put("login", getLogin());
+        values.put("name", getName());
+        values.put("email", getEmail());
+        values.put("birthday", getBirthday());
+        return values;
+    }
 }

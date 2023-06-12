@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.user.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
+    public ResponseEntity<List<Optional<User>>> getAll() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 

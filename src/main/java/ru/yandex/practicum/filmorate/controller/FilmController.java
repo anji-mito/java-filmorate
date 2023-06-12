@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.service.film.FilmService;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -26,7 +27,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public ResponseEntity<Film> update(@Valid @RequestBody Film film) {
+    public ResponseEntity<Optional<Film>> update(@Valid @RequestBody Film film) {
         try {
             return ResponseEntity.ok(filmService.update(film));
         } catch (IllegalStateException e) {
@@ -35,7 +36,7 @@ public class FilmController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Film>> getAll() {
+    public ResponseEntity<List<Optional<Film>>> getAll() {
         return ResponseEntity.ok(filmService.getAllFilms());
     }
 
@@ -44,12 +45,12 @@ public class FilmController {
         try {
             return ResponseEntity.ok(filmService.getFilm(id));
         } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не был найден.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Film is not found");
         }
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<Iterable<Film>> getPopular(@RequestParam(defaultValue = "10") int count) {
+    public ResponseEntity<List<Optional<Film>>> getPopular(@RequestParam(defaultValue = "10") int count) {
         return ResponseEntity.ok(filmService.getPopular(count));
     }
 
