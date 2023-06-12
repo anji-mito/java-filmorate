@@ -42,9 +42,7 @@ public class MpaDbStorage implements MpaStorage {
     @Override
     public Mpa update(Mpa mpa) {
         String sqlQuery = "update mpa set name = ? where id = ?";
-        jdbcTemplate.update(sqlQuery
-                , mpa.getName()
-                , mpa.getId());
+        jdbcTemplate.update(sqlQuery, mpa.getName(), mpa.getId());
         return mpa;
     }
 
