@@ -27,7 +27,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public ResponseEntity<Optional<Film>> update(@Valid @RequestBody Film film) {
+    public ResponseEntity<Film> update(@Valid @RequestBody Film film) {
         try {
             return ResponseEntity.ok(filmService.update(film));
         } catch (IllegalStateException e) {

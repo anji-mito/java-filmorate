@@ -30,11 +30,15 @@ public class FilmService {
         return getFilm(filmStorage.create(film));
     }
 
-    public Optional<Film> update(Film film) throws IllegalStateException {
+    public Film update(Film film) throws IllegalStateException {
         if (filmStorage.findFilm(film.getId()).isEmpty()) {
             throw new IllegalStateException("Not found such a user");
         }
-        return filmStorage.update(film);
+        if (filmStorage.update(film).isPresent()) {
+            return (filmStorage.update(film).get());
+        } else {
+            throw new IllegalStateException("Not found such a user");
+        }
     }
 
     public List<Optional<Film>> getAllFilms() {
