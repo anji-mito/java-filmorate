@@ -16,6 +16,7 @@ public class FilmsGenresDbStorage implements FilmsGenresStorage {
     public FilmsGenresDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
+
     @Override
     public List<Optional<Genre>> getGenresOfFilm(long id) {
         String sqlQuery = "SELECT FG.genre_id as genre_id, g.name as name FROM FILMS_GENRES"

@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+
 @Component
 public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
@@ -27,6 +28,7 @@ public class MpaDbStorage implements MpaStorage {
             return Optional.empty();
         }
     }
+
     @Override
     public Mpa create(Mpa mpa) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -41,8 +43,8 @@ public class MpaDbStorage implements MpaStorage {
     public Mpa update(Mpa mpa) {
         String sqlQuery = "update mpa set name = ? where id = ?";
         jdbcTemplate.update(sqlQuery
-                ,mpa.getName()
-                ,mpa.getId());
+                , mpa.getName()
+                , mpa.getId());
         return mpa;
     }
 
@@ -51,11 +53,13 @@ public class MpaDbStorage implements MpaStorage {
         String sqlQuery = "delete from mpa where id = ?";
         jdbcTemplate.update(sqlQuery, mpa.getId());
     }
+
     @Override
     public List<Optional<Mpa>> findAll() {
         String sqlQuery = "SELECT * FROM MPA";
         return jdbcTemplate.query(sqlQuery, this::mapRowToMpa);
     }
+
     private Optional<Mpa> mapRowToMpa(ResultSet resultSet, int i) throws SQLException {
         return Optional.of(Mpa.builder()
                 .id(resultSet.getInt("id"))

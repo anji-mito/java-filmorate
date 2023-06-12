@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.NoSpaces;
+
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -12,6 +13,7 @@ import java.util.*;
 @Data
 @Builder
 public class User {
+    public Set<Long> friends = new HashSet<>();
     long id;
     @NotNull(message = "Email can not be null")
     @Email(message = "Incorrect format of email")
@@ -23,7 +25,6 @@ public class User {
     String name;
     @Past(message = "Birthday can not be in the future")
     LocalDate birthday;
-    public Set<Long> friends = new HashSet<>();
 
     public Map<String, Object> toMap() {
         Map<String, Object> values = new HashMap<>();

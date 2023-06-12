@@ -19,6 +19,7 @@ import java.util.Optional;
 @RequestMapping("/genres")
 public class GenreController {
     private final GenreService genreService;
+
     @GetMapping
     public ResponseEntity<List<Optional<Genre>>> getAll() {
         return ResponseEntity.ok(genreService.getAll());
@@ -32,6 +33,7 @@ public class GenreController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Genre is not found");
         }
     }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Genre> create(@Valid @RequestBody Genre genre) {

@@ -11,6 +11,7 @@ import java.util.Map;
 public class Genre {
     private int id;
     private String name;
+
     public Map<String, ?> toMap() {
         Map<String, Object> values = new HashMap<>();
         values.put("name", getName());

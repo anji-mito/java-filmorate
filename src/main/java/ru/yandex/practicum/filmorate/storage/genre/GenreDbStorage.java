@@ -44,8 +44,8 @@ public class GenreDbStorage implements GenreStorage {
     public Genre update(Genre genre) {
         String sqlQuery = "update genres set name = ? where id = ?";
         jdbcTemplate.update(sqlQuery
-                ,genre.getName()
-                ,genre.getId());
+                , genre.getName()
+                , genre.getId());
         return genre;
     }
 
@@ -60,6 +60,7 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = "SELECT * FROM GENRES";
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
+
     private Optional<Genre> mapRowToGenre(ResultSet resultSet, int i) throws SQLException {
         return Optional.of(Genre.builder()
                 .id(resultSet.getInt("id"))

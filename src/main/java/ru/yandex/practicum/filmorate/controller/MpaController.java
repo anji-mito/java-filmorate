@@ -21,6 +21,7 @@ import java.util.Optional;
 @RequestMapping("/mpa")
 public class MpaController {
     private final MpaService mpaService;
+
     @GetMapping
     public ResponseEntity<List<Optional<Mpa>>> getAll() {
         return ResponseEntity.ok(mpaService.getAll());

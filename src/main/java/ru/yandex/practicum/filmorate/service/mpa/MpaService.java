@@ -12,10 +12,12 @@ import java.util.Optional;
 @Service
 public class MpaService {
     private final MpaStorage mpaStorage;
+
     @Autowired
     public MpaService(MpaStorage mpaStorage) {
         this.mpaStorage = mpaStorage;
     }
+
     public Optional<Mpa> getMpa(long id) {
         Optional<Mpa> foundMpa = mpaStorage.findMpa(id);
         if (foundMpa.isPresent()) {
@@ -24,6 +26,7 @@ public class MpaService {
             throw new IllegalStateException("Mpa is not found");
         }
     }
+
     public List<Optional<Mpa>> getAll() {
         return mpaStorage.findAll();
     }

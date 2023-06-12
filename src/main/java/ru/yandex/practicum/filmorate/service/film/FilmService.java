@@ -68,7 +68,7 @@ public class FilmService {
         if (foundFilm.isPresent()) {
             var r = filmsGenresDbStorage.getGenresOfFilm(id);
             List<Genre> genres = new ArrayList<>();
-            for (Optional<Genre> genre: r) {
+            for (Optional<Genre> genre : r) {
                 genre.ifPresent(genres::add);
             }
             Film film = foundFilm.get();

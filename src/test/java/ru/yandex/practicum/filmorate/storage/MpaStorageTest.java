@@ -23,6 +23,7 @@ public class MpaStorageTest {
     @Rule
     public final ExpectedException exception = ExpectedException.none();
     private final MpaService mpaService;
+
     @Test
     void shouldReturnMpaWithId1andNameG() {
         Optional<Mpa> mpaOpt = mpaService.getMpa(1);

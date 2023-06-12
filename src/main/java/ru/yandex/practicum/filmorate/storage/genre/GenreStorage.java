@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface GenreStorage {
     Optional<Genre> findGenre(Long id);
+
     Genre create(Genre genre);
 
     Genre update(Genre genre);

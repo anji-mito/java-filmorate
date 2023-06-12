@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+
 @Component
 
 public class UserDbStorage implements UserStorage {
@@ -86,6 +87,7 @@ public class UserDbStorage implements UserStorage {
                 "values (?, ?)";
         jdbcTemplate.update(sqlQuery, id, friendId);
     }
+
     @Override
     public void removeFriend(long id, long friendId) {
         String sqlQuery = "delete from FRIENDSHIP where friend_id = ? and user_id = ?";
