@@ -17,7 +17,6 @@ import java.util.Optional;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final UserService userService;
-    //стоит ли создать и использовать вместо storage Service для вспомогательой таблицы films-genres
     private final FilmsGenresStorage filmsGenresDbStorage;
 
     @Autowired
