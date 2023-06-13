@@ -14,5 +14,5 @@ public interface GenreStorage {
 
     void remove(Genre genre);
 
-    List<Optional<Genre>> findAll();
+    List<Genre> findAll();
 }

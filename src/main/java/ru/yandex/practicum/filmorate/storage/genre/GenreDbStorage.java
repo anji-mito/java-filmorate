@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +54,14 @@ public class GenreDbStorage implements GenreStorage {
     }
 
     @Override
-    public List<Optional<Genre>> findAll() {
+    public List<Genre> findAll() {
         String sqlQuery = "SELECT * FROM GENRES";
-        return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
+        List<Optional<Genre>> genres = jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
+        List<Genre> result = new ArrayList<>();
+        for (Optional<Genre> genre: genres) {
+            genre.ifPresent(result::add);
+        }
+        return result;
     }
 
     private Optional<Genre> mapRowToGenre(ResultSet resultSet, int i) throws SQLException {

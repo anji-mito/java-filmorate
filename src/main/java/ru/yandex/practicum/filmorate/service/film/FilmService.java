@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.user.UserService;
@@ -9,9 +10,7 @@ import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresDbStorage;
 import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresStorage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FilmService {
@@ -41,7 +40,7 @@ public class FilmService {
         }
     }
 
-    public List<Optional<Film>> getAllFilms() {
+    public List<Film> getAllFilms() {
         return filmStorage.findAll();
     }
 
@@ -57,28 +56,15 @@ public class FilmService {
         filmStorage.addLike(filmId, userId);
     }
 
-    public List<Optional<Film>> getPopular(int count) {
-        var sorted = new ArrayList<>(List.copyOf(filmStorage.findAll()));
-        sorted.sort((o1, o2) -> o2.get().getRate() - (o1.get().getRate()));
-        if (count > sorted.size()) {
-            count = sorted.size();
-        }
-        return sorted.subList(0, count);
+     public List<Film> getPopular(int count) {
+          return filmStorage.getPopular(count);
     }
 
-    public Film getFilm(Long id) throws IllegalStateException {
-        Optional<Film> foundFilm = filmStorage.findFilm(id);
-        if (foundFilm.isPresent()) {
-            var r = filmsGenresDbStorage.getGenresOfFilm(id);
-            List<Genre> genres = new ArrayList<>();
-            for (Optional<Genre> genre : r) {
-                genre.ifPresent(genres::add);
-            }
-            Film film = foundFilm.get();
-            film.setGenres(genres);
-            return film;
-        } else {
-            throw new IllegalStateException("Film is not found");
-        }
+    public Film getFilm(Long id) {
+        Film foundFilm = filmStorage.findFilm(id)
+                .orElseThrow(() -> new FilmNotFoundException("Film is not found"));
+        List<Genre> genres = filmsGenresDbStorage.getGenresOfFilm(id);
+        foundFilm.setGenres(genres);
+        return foundFilm;
     }
 }

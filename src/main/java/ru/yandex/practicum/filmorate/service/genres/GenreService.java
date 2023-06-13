@@ -24,7 +24,7 @@ public class GenreService {
         }
     }
 
-    public List<Optional<Genre>> getAll() {
+    public List<Genre> getAll() {
         return genreStorage.findAll();
     }
 
