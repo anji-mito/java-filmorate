@@ -7,6 +7,7 @@ import org.junit.rules.ExpectedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.mpa.MpaService;
 
@@ -44,7 +45,7 @@ public class MpaStorageTest {
 
     @Test
     void shouldThrowExceptionIfPutWrongId() {
-        Throwable exception = assertThrows(IllegalStateException.class, () -> mpaService.getMpa(99));
+        Throwable exception = assertThrows(MpaNotFoundException.class, () -> mpaService.getMpa(99));
         assertEquals("Mpa is not found", exception.getMessage());
     }
 }
