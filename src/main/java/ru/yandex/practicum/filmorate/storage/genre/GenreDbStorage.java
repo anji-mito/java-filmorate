@@ -35,7 +35,7 @@ public class GenreDbStorage implements GenreStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("genres")
                 .usingGeneratedKeyColumns("id");
-        long id = simpleJdbcInsert.executeAndReturnKey(genre.toMap()).longValue();
+        long id = simpleJdbcInsert.executeAndReturnKey(GenreMapper.toMap(genre)).longValue();
         genre.setId((int) id);
         return genre;
     }
@@ -58,7 +58,7 @@ public class GenreDbStorage implements GenreStorage {
         String sqlQuery = "SELECT * FROM GENRES";
         List<Optional<Genre>> genres = jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
         List<Genre> result = new ArrayList<>();
-        for (Optional<Genre> genre: genres) {
+        for (Optional<Genre> genre : genres) {
             genre.ifPresent(result::add);
         }
         return result;

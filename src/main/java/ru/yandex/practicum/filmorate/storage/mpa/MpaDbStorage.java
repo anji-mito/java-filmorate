@@ -34,7 +34,7 @@ public class MpaDbStorage implements MpaStorage {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("films")
                 .usingGeneratedKeyColumns("id");
-        long id = simpleJdbcInsert.executeAndReturnKey(mpa.toMap()).longValue();
+        long id = simpleJdbcInsert.executeAndReturnKey(MpaMapper.toMap(mpa)).longValue();
         mpa.setId((int) id);
         return mpa;
     }

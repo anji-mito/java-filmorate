@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.service.genres;
 
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.genre.GenreStorage;
 
@@ -20,7 +21,7 @@ public class GenreService {
         if (foundGenre.isPresent()) {
             return foundGenre;
         } else {
-            throw new IllegalStateException("Genre is not found");
+            throw new GenreNotFoundException("Genre is not found");
         }
     }
 
@@ -32,9 +33,9 @@ public class GenreService {
         return genreStorage.create(genre);
     }
 
-    public Genre update(Genre genre) throws IllegalStateException {
+    public Genre update(Genre genre) {
         if (genreStorage.findGenre((long) genre.getId()).isEmpty()) {
-            throw new IllegalStateException("genre is not found");
+            throw new GenreNotFoundException("genre is not found");
         }
         return genreStorage.update(genre);
     }

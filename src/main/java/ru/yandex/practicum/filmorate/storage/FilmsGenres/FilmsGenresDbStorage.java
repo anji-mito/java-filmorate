@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.genre;
+package ru.yandex.practicum.filmorate.storage.FilmsGenres;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -24,7 +24,7 @@ public class FilmsGenresDbStorage implements FilmsGenresStorage {
                 + " as FG JOIN GENRES as G on g.id = fg.genre_id WHERE FG.FILM_ID = ?";
         List<Optional<Genre>> optionalList = jdbcTemplate.query(sqlQuery, this::mapRowToGenres, id);
         List<Genre> result = new ArrayList<>();
-        for(Optional<Genre> optionalGenre: optionalList) {
+        for (Optional<Genre> optionalGenre : optionalList) {
             optionalGenre.ifPresent(result::add);
         }
         return result;

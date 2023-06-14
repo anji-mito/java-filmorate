@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
-import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresDbStorage;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -22,12 +21,9 @@ import java.util.*;
 @Repository
 public class FilmDbStorage implements FilmStorage {
     private final JdbcTemplate jdbcTemplate;
-    private final FilmsGenresDbStorage filmsGenresDbStorage;
-
     @Autowired
-    public FilmDbStorage(JdbcTemplate jdbcTemplate, FilmsGenresDbStorage filmsGenresDbStorage) {
+    public FilmDbStorage(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.filmsGenresDbStorage = filmsGenresDbStorage;
     }
 
     @Override
@@ -35,13 +31,14 @@ public class FilmDbStorage implements FilmStorage {
         try {
             String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION,"
                     + "                f.ID_RATING, m.id as mpa_id, m.name as mpa_name, COUNT(fl.user_id) as likes,\n"
-                    + "GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
-                    + "GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames"
+                    + "                GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
+                    + "                GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames"
                     + "                FROM FILMS as f\n"
                     + "                join mpa as m on m.id = f.id_rating\n"
-                    + "                LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n \n"
-                    + "left outer join films_genres as g on g.film_id = f.id left outer JOIN genres AS gs ON gs.id = g.GENRE_ID"
-                    + " where f.id = ? \n"
+                    + "                LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n"
+                    + "                left outer join films_genres as g on g.film_id = f.id\n"
+                    + "                left outer JOIN genres AS gs ON gs.id = g.GENRE_ID\n"
+                    + "                where f.id = ? \n"
                     + "                GROUP BY f.id\n"
                     + "                ORDER BY COUNT(fl.user_id)";
             return jdbcTemplate.queryForObject(sqlQuery, this::mapRowToFilm, id);
@@ -90,14 +87,15 @@ public class FilmDbStorage implements FilmStorage {
     @Override
     public List<Film> findAll() {
         String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION,\n"
-                +            "f.ID_RATING, m.id as mpa_id, m.name as mpa_name, COUNT(fl.user_id) as likes,\n"
-                +            "GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
-                +            "GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames\n"
-                +          "FROM FILMS as f\n"
-                +          "join mpa as m on m.id = f.id_rating\n"
-                +          "LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n"
-                +          "left outer join films_genres as g on g.film_id = f.id  left outer join genres AS gs ON gs.id = g.GENRE_ID \n"
-                +          "GROUP BY f.id";
+                + "             f.ID_RATING, m.id as mpa_id, m.name as mpa_name, COUNT(fl.user_id) as likes,\n"
+                + "             GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
+                + "             GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames\n"
+                + "             FROM FILMS as f\n"
+                + "             join mpa as m on m.id = f.id_rating\n"
+                + "             LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n"
+                + "             left outer join films_genres as g on g.film_id = f.id\n"
+                + "             left outer join genres AS gs ON gs.id = g.GENRE_ID \n"
+                + "             GROUP BY f.id";
         List<Optional<Film>> foundFilms = jdbcTemplate.query(sqlQuery, this::mapRowToFilm);
         List<Film> result = new ArrayList<>();
         for (Optional<Film> filmOptional : foundFilms) {
@@ -123,12 +121,13 @@ public class FilmDbStorage implements FilmStorage {
     public List<Film> getPopular(int count) {
         String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.RELEASE_DATE, f.DURATION,"
                 + "                f.ID_RATING, m.id as mpa_id, m.name as mpa_name, COUNT(fl.user_id) as likes,\n"
-                + "GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
-                + "GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames"
+                + "                GROUP_CONCAT( DISTINCT g.genre_id SEPARATOR ',') as genresid, \n"
+                + "                GROUP_CONCAT(gs.name SEPARATOR ',') as genresnames"
                 + "                FROM FILMS as f\n"
                 + "                join mpa as m on m.id = f.id_rating\n"
-                + "                LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n \n"
-                + "left outer join films_genres as g on g.film_id = f.id left outer JOIN genres AS gs ON gs.id = g.GENRE_ID"
+                + "                LEFT OUTER join films_users_likes as fl on f.id = fl.film_id\n"
+                + "                left outer join films_genres as g on g.film_id = f.id\n"
+                + "                left outer JOIN genres AS gs ON gs.id = g.GENRE_ID\n"
                 + "                GROUP BY f.id\n"
                 + "                ORDER BY COUNT(fl.user_id) DESC LIMIT ?";
         List<Optional<Film>> foundFilms = jdbcTemplate.query(sqlQuery, this::mapRowToFilm, count);
@@ -163,7 +162,8 @@ public class FilmDbStorage implements FilmStorage {
         String genresIdString = resultSet.getString("genresid");
         String genresNamesString = resultSet.getString("genresnames");
 
-        if (genresIdString != null && genresNamesString != null && !genresIdString.equals("") && !genresNamesString.equals("")) {
+        if (genresIdString != null && genresNamesString != null && !genresIdString.equals("")
+                && !genresNamesString.equals("")) {
             String[] genresId = genresIdString.split(",");
             String[] genresNames = genresNamesString.split(",");
             for (int c = 0; c < genresId.length; c++) {

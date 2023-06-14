@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.genres.GenreService;
 
@@ -27,11 +26,7 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Genre>> getGenre(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(genreService.getGenre(id));
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Genre is not found");
-        }
+        return ResponseEntity.ok(genreService.getGenre(id));
     }
 
     @PostMapping
@@ -42,10 +37,6 @@ public class GenreController {
 
     @PutMapping
     public ResponseEntity<Genre> update(@Valid @RequestBody Genre genre) {
-        try {
-            return ResponseEntity.ok(genreService.update(genre));
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Genre is not found");
-        }
+        return ResponseEntity.ok(genreService.update(genre));
     }
 }

@@ -26,12 +26,4 @@ public class User {
     @Past(message = "Birthday can not be in the future")
     LocalDate birthday;
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> values = new HashMap<>();
-        values.put("login", getLogin());
-        values.put("name", getName());
-        values.put("email", getEmail());
-        values.put("birthday", getBirthday());
-        return values;
-    }
 }

@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service.mpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
@@ -22,7 +23,7 @@ public class MpaService {
         if (foundMpa.isPresent()) {
             return foundMpa;
         } else {
-            throw new IllegalStateException("Mpa is not found");
+            throw new MpaNotFoundException("Mpa is not found");
         }
     }
 

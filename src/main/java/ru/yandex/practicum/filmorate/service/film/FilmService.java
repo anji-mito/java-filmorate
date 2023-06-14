@@ -2,15 +2,17 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.BadRequestFilmException;
 import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.user.UserService;
 import ru.yandex.practicum.filmorate.storage.film.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresDbStorage;
-import ru.yandex.practicum.filmorate.storage.genre.FilmsGenresStorage;
+import ru.yandex.practicum.filmorate.storage.FilmsGenres.FilmsGenresDbStorage;
+import ru.yandex.practicum.filmorate.storage.FilmsGenres.FilmsGenresStorage;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FilmService {
@@ -29,14 +31,14 @@ public class FilmService {
         return getFilm(filmStorage.create(film));
     }
 
-    public Film update(Film film) throws IllegalStateException {
-        if (filmStorage.findFilm(film.getId()).isEmpty()) {
-            throw new IllegalStateException("Not found such a user");
-        }
-        if (filmStorage.update(film).isPresent()) {
-            return (filmStorage.update(film).get());
+    public Film update(Film film) {
+        filmStorage.findFilm(film.getId())
+                .orElseThrow(() -> new FilmNotFoundException("Film is not found"));
+        Optional<Film> updated = filmStorage.update(film);
+        if (updated.isPresent()) {
+            return updated.get();
         } else {
-            throw new IllegalStateException("Not found such a user");
+            throw new BadRequestFilmException("Ошибка при обновления фильма, проверьте введенные данные");
         }
     }
 
@@ -44,20 +46,20 @@ public class FilmService {
         return filmStorage.findAll();
     }
 
-    public void addLike(Long filmId, Long userId) throws IllegalStateException {
+    public void addLike(Long filmId, Long userId) {
         getFilm(filmId);
         userService.getUser(userId);
         filmStorage.addLike(filmId, userId);
     }
 
-    public void removeLike(Long filmId, Long userId) throws IllegalStateException {
+    public void removeLike(Long filmId, Long userId) {
         getFilm(filmId);
         userService.getUser(userId);
         filmStorage.addLike(filmId, userId);
     }
 
-     public List<Film> getPopular(int count) {
-          return filmStorage.getPopular(count);
+    public List<Film> getPopular(int count) {
+        return filmStorage.getPopular(count);
     }
 
     public Film getFilm(Long id) {
