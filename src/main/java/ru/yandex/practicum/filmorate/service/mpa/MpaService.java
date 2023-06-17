@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.util.List;
+
 @Service
 public class MpaService {
     private final MpaStorage mpaStorage;
