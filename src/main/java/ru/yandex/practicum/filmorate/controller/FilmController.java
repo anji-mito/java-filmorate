@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.film.FilmService;
 
@@ -27,11 +26,7 @@ public class FilmController {
 
     @PutMapping
     public ResponseEntity<Film> update(@Valid @RequestBody Film film) {
-        try {
-            return ResponseEntity.ok(filmService.update(film));
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        return ResponseEntity.ok(filmService.update(film));
     }
 
     @GetMapping
@@ -41,33 +36,21 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Film> getFilm(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(filmService.getFilm(id));
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Пользователь не был найден.");
-        }
+        return ResponseEntity.ok(filmService.getFilm(id));
     }
 
     @GetMapping("/popular")
-    public ResponseEntity<Iterable<Film>> getPopular(@RequestParam(defaultValue = "10") int count) {
+    public ResponseEntity<List<Film>> getPopular(@RequestParam(defaultValue = "10") int count) {
         return ResponseEntity.ok(filmService.getPopular(count));
     }
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable long id, @PathVariable long userId) {
-        try {
-            filmService.addLike(id, userId);
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        filmService.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     public void deleteLike(@PathVariable long id, @PathVariable long userId) {
-        try {
-            filmService.removeLike(id, userId);
-        } catch (IllegalStateException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
-        }
+        filmService.removeLike(id, userId);
     }
 }

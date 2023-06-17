@@ -1,15 +1,17 @@
 package ru.yandex.practicum.filmorate.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import ru.yandex.practicum.filmorate.validation.annotation.ReleaseDate;
+
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 @Slf4j
 @Data
+@Builder
 public class Film {
     long id;
     @NotNull(message = "Name can not be null")
@@ -25,5 +27,8 @@ public class Film {
     @NotNull(message = "Duration can not be null")
     @Min(value = 0, message = "Duration can not be negative")
     Integer duration;
-    Set<Long> likes = new TreeSet<>();
+    Mpa mpa;
+    int rate;
+    List<Genre> genres = new ArrayList<>();
+
 }
