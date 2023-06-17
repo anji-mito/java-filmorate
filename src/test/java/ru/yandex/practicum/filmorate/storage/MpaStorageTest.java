@@ -13,7 +13,6 @@ import ru.yandex.practicum.filmorate.service.mpa.MpaService;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
