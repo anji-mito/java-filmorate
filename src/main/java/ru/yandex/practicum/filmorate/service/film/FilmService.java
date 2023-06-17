@@ -2,8 +2,8 @@ package ru.yandex.practicum.filmorate.service.film;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.BadRequestFilmException;
-import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.BadRequestException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.service.user.UserService;
@@ -33,12 +33,12 @@ public class FilmService {
 
     public Film update(Film film) {
         filmStorage.findFilm(film.getId())
-                .orElseThrow(() -> new FilmNotFoundException("Film is not found"));
+                .orElseThrow(() -> new NotFoundException("Film is not found"));
         Optional<Film> updated = filmStorage.update(film);
         if (updated.isPresent()) {
             return updated.get();
         } else {
-            throw new BadRequestFilmException("Ошибка при обновления фильма, проверьте введенные данные");
+            throw new BadRequestException("Ошибка при обновления фильма, проверьте введенные данные");
         }
     }
 
@@ -64,7 +64,7 @@ public class FilmService {
 
     public Film getFilm(Long id) {
         Film foundFilm = filmStorage.findFilm(id)
-                .orElseThrow(() -> new FilmNotFoundException("Film is not found"));
+                .orElseThrow(() -> new NotFoundException("Film is not found"));
         List<Genre> genres = filmsGenresDbStorage.getGenresOfFilm(id);
         foundFilm.setGenres(genres);
         return foundFilm;

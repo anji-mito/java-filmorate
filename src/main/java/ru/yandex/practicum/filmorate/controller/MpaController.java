@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.service.mpa.MpaService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -21,12 +20,12 @@ public class MpaController {
     private final MpaService mpaService;
 
     @GetMapping
-    public ResponseEntity<List<Optional<Mpa>>> getAll() {
+    public ResponseEntity<List<Mpa>> getAll() {
         return ResponseEntity.ok(mpaService.getAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Mpa>> getMpa(@PathVariable Long id) {
+    public ResponseEntity<Mpa> getMpa(@PathVariable Long id) {
         return ResponseEntity.ok(mpaService.getMpa(id));
     }
 }

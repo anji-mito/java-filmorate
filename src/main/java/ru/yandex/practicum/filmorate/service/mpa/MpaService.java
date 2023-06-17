@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorate.service.mpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.mpa.MpaStorage;
 
 import java.util.List;
-import java.util.Optional;
-
 @Service
 public class MpaService {
     private final MpaStorage mpaStorage;
@@ -18,16 +16,12 @@ public class MpaService {
         this.mpaStorage = mpaStorage;
     }
 
-    public Optional<Mpa> getMpa(long id) {
-        Optional<Mpa> foundMpa = mpaStorage.findMpa(id);
-        if (foundMpa.isPresent()) {
-            return foundMpa;
-        } else {
-            throw new MpaNotFoundException("Mpa is not found");
-        }
+    public Mpa getMpa(long id) {
+        return mpaStorage.findMpa(id)
+                .orElseThrow(() -> new NotFoundException("Not found mpa by id: " + id));
     }
 
-    public List<Optional<Mpa>> getAll() {
+    public List<Mpa> getAll() {
         return mpaStorage.findAll();
     }
 }

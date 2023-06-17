@@ -14,6 +14,6 @@ public interface MpaStorage {
 
     void remove(Mpa mpa);
 
-    List<Optional<Mpa>> findAll();
+    List<Mpa> findAll();
 
 }
